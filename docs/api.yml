@@ -226,6 +226,28 @@ paths:
           $ref: '#/components/responses/ApiResponse/403'
         500:
           $ref: '#/components/responses/ApiResponse/500'
+  /visitor:
+    put:
+      tags:
+        - Visitor
+      summary: make a change on borrowing or on giving back book
+      operationId: borrowBack
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Visitor'
+      responses:
+        '200':
+          description: The list of created or updated author
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
 
 components:
   responses:
@@ -302,4 +324,13 @@ components:
           type: string
         sex:
           #TODO1: set it as a component with properties : id, name, sex (M or F)
+          type: string
+    Visitor:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        reference:
           type: string
