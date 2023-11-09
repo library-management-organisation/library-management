@@ -284,6 +284,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Books'
+  /books/available:
+    get:
+      tags:
+        - Books
+      summary: Obtenir la liste des livres disponibles
+      operationId: getAvailableBooks
+      responses:
+        '200':
+          description: Liste des livres disponibles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Books'
+
 
 components:
   responses:
