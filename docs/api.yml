@@ -1,0 +1,305 @@
+openapi: 3.0.3
+info:
+  title: Library API
+  version: 1.0.0
+  description: STD22083
+servers:
+  - url: https://library.com
+paths:
+  /books:
+    get:
+      tags:
+        - Books
+      summary: Get all books
+      description: The returned books are ordered by updated datetime.
+      operationId: getBooks
+      parameters:
+        - $ref: '#/components/parameters/queryPagination'
+        - in: query
+          name: bookName
+          description: Filter return books by given name
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: releaseDateMin
+          description: |
+            If  `releaseDateMax` is not provided, `releaseDateMin` is ignored.
+            `releaseDateMin` can not be after `releaseDateMax`.
+          schema:
+            type: string
+            format: date
+          required: false
+        - in: query
+          name: releaseDateMax
+          description: |
+            If  `releaseDateMin` is not provided, `releaseDateMax` is ignored.
+            `releaseDateMax` can not be after `releaseDateMin`.
+          schema:
+            type: string
+            format: date
+          required: false
+      responses:
+        200:
+          description: The list of filtered books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        400:
+          $ref: '#/components/responses/ApiResponse/400'
+        403:
+          $ref: '#/components/responses/ApiResponse/403'
+        500:
+          $ref: '#/components/responses/ApiResponse/500'
+    put:
+      tags:
+        - Books
+      summary: Create or update a list of books
+      operationId: crupdateBooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Book'
+      responses:
+        200:
+          description: The list of created or updated books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        400:
+          $ref: '#/components/responses/ApiResponse/400'
+        403:
+          $ref: '#/components/responses/ApiResponse/403'
+        500:
+          $ref: '#/components/responses/ApiResponse/500'
+  /authors:
+    get:
+      tags:
+        - Authors
+      summary: Get all authors
+      description: The returned authors are ordered by updated datetime.
+      operationId: getAuthors
+      parameters:
+        - $ref: '#/components/parameters/pathPagination'
+        - in: query
+          name: AuthorName
+          description: Filter return authors by given name
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: releaseDateStart
+          description: Filter authors by release date (start of interval)
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: releaseDateEnd
+          description: Filter authors by release date (end of interval)
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: The list of filtered authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        400:
+          $ref: '#/components/responses/ApiResponse/400'
+        403:
+          $ref: '#/components/responses/ApiResponse/403'
+        500:
+          $ref: '#/components/responses/ApiResponse/500'
+    put:
+      tags:
+        - Authors
+      summary: Create or update a list of authors
+      operationId: crupdateAuthors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Book'
+      responses:
+        200:
+          description: The list of created or updated authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        400:
+          $ref: '#/components/responses/ApiResponse/400'
+        403:
+          $ref: '#/components/responses/ApiResponse/403'
+        500:
+          $ref: '#/components/responses/ApiResponse/500'
+    delete:
+      tags:
+        - Authors
+      summary: Delete authors by name
+      operationId: deleteAuthorsByName
+      parameters:
+        - in: query
+          name: authorName
+          description: Filter authors by name
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: authors have been deleted
+        400:
+          $ref: '#/components/responses/ApiResponse/400'
+        403:
+          $ref: '#/components/responses/ApiResponse/403'
+        500:
+          $ref: '#/components/responses/ApiResponse/500'
+
+  /books/{bookId}/authors/{authorId}:
+    put:
+      tags:
+        - Authors
+      summary: Create or update list of books
+      operationId: crupdateBooks
+      parameters:
+        - name: bookId
+          in: path
+          description: book for modify
+          schema: 
+            type: string
+          required: true
+        - name: authorId
+          in: path
+          description: author for modify
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: modify authors of books
+        400:
+          $ref: '#/components/responses/ApiResponse/400'
+        403:
+          $ref: '#/components/responses/ApiResponse/403'
+        500:
+          $ref: '#/components/responses/ApiResponse/500'
+
+  /books/authors:
+    put:
+      tags:
+        - Authors
+      summary: Attach authors to book
+      description: many authors attached for many books by id
+      operationId: attachAuthorsToBooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/updateBookAuthor'
+      responses:
+        200:
+          description: Authors attached to the books
+        400:
+          $ref: '#/components/responses/ApiResponse/400'
+        403:
+          $ref: '#/components/responses/ApiResponse/403'
+        500:
+          $ref: '#/components/responses/ApiResponse/500'
+
+components:
+  responses:
+    ApiResponse:
+      $ref: '#/components/responses/ApiResponse'
+      400:
+        description: Bad request
+      403:
+        description: Forbidden
+      500:
+        description: Internal Server Error
+  parameters:
+    queryPagination:
+      name: page
+      in: query
+      description: Number of the page
+      schema:
+        type: integer
+        default: 1
+    pathPagination:
+      name: page
+      required: true
+      in: path
+      description: number of the page
+      schema: 
+        type: integer
+        default: 1
+  schemas:
+    CrupdateBook:
+      allOf:
+        - $ref: '#/components/schemas/Book'
+        - type: object
+          required:
+            - id
+            - bookName
+            - releaseDateMax
+            - releaseDateMin
+            - topic
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+        bookName:
+          type: string
+        author:
+          $ref: '#/components/schemas/Author'
+        pageNumbers:
+          type: integer
+        topic:
+          type: string
+          enum:
+            - ROMANCE
+            - COMEDY
+            - OTHER
+        releaseDate:
+          type: string
+          format: date
+    updateBookAuthor:
+      type: object
+      properties:
+        bookId:
+          type: string
+          description: the ID of the book to update/attach an author
+        authorId:
+          type: string
+          description: the ID of the authorto attach to the book
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        sex:
+          #TODO1: set it as a component with properties : id, name, sex (M or F)
+          type: string
