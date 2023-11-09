@@ -299,6 +299,47 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Books'
+  /admin/add-author:
+    post:
+      tags:
+        - Admin
+      summary: Ajouter un nouvel auteur (accessible uniquement par les administrateurs)
+      operationId: addAuthor
+      security:
+        - admin: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Author'
+      responses:
+        '200':
+          description: Auteur ajouté avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+
+  /admin/add-book:
+    post:
+      tags:
+        - Admin
+      summary: Ajouter un nouveau livre (accessible uniquement par les administrateurs)
+      operationId: addBook
+      security:
+        - admin: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: Livre ajouté avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
 
 
 components:
